@@ -44,10 +44,6 @@
         "icon": "https://img.icons8.com/dusk/40/postman-api.png"
     },
     {
-        "name": "DigitalOcean",
-        "icon": "https://img.icons8.com/ios-filled/40/0080FF/digitalocean.png"
-    },
-    {
         "name": "WordPress",
         "icon": "https://img.icons8.com/color/40/000000/wordpress.png"
     },
@@ -94,7 +90,57 @@
     {
         "name": "Backup",
         "icon": "https://img.icons8.com/officel/40/data-backup.png"
+    },
+    {
+        "name": "AI/LLM Integration",
+        "icon": "https://img.icons8.com/color/40/ai.png"
+    },
+    {
+        "name": "API Integration",
+        "icon": "https://img.icons8.com/color/40/api.png"
+    },
+    {
+        "name": "Linux",
+        "icon": "https://img.icons8.com/color/40/linux.png"
+    },
+    {
+        "name": "Docker",
+        "icon": "https://img.icons8.com/color/40/docker.png"
+    },
+    {
+        "name": "Nginx",
+        "icon": "https://img.icons8.com/color/40/nginx.png"
+    },
+    {
+        "name": "Kubernetes",
+        "icon": "https://img.icons8.com/color/40/kubernetes.png"
+    },
+    {
+        "name": "Firebase",
+        "icon": "https://img.icons8.com/color/40/firebase.png"
+    },
+    {
+        "name": "Vercel",
+        "icon": "https://img.icons8.com/color/40/vercel.png"
+    },
+    {
+        "name": "Netlify",
+        "icon": "https://img.icons8.com/color/40/netlify.png"
+    }, 
+    {
+        "name": "Cloudflare",
+        "icon": "https://img.icons8.com/color/40/cloudflare.png"
+    },
+    {
+        "name": "Google Cloud",
+        "icon": "https://img.icons8.com/color/40/google-cloud.png"
+    },
+    {
+        "name": "PayPal",
+        "icon": "https://img.icons8.com/color/40/paypal.png"
+    },
+    {
+        "name": "Stripe",
+        "icon": "https://img.icons8.com/color/40/stripe.png"
     }
-    
-     
 ]
