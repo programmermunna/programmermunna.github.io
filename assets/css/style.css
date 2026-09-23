@@ -922,6 +922,157 @@ header .navbar ul li a.active::after {
   border-color: #fff;
 }
 
+/* ===== Gallery ===== */
+.gallery {
+  background: #fff;
+}
+.gallery .qoute {
+  font-size: 1.6rem;
+  text-align: center;
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 0.5rem;
+}
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+  gap: 1.8rem;
+  max-width: 120rem;
+  margin: 3rem auto 0;
+}
+.gallery-grid .g-item {
+  position: relative;
+  height: 24rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
+}
+.gallery-grid .g-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease);
+}
+.gallery-grid .g-item::after {
+  content: "\f00e";
+  font-family: "Font Awesome\ 5 Free";
+  font-weight: 900;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  color: #fff;
+  background: linear-gradient(
+    180deg,
+    rgba(249, 115, 22, 0.25),
+    rgba(225, 29, 72, 0.55)
+  );
+  opacity: 0;
+  transition: opacity 0.35s var(--ease);
+}
+.gallery-grid .g-item:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+.gallery-grid .g-item:hover img {
+  transform: scale(1.08);
+}
+.gallery-grid .g-item:hover::after {
+  opacity: 1;
+}
+
+/* lightbox */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10005;
+  background: rgba(10, 6, 20, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s var(--ease), visibility 0.35s;
+}
+.lightbox.open {
+  opacity: 1;
+  visibility: visible;
+}
+.lightbox img {
+  max-width: min(92vw, 110rem);
+  max-height: 85vh;
+  border-radius: 1.2rem;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  transform: scale(0.92);
+  transition: transform 0.35s var(--ease);
+}
+.lightbox.open img {
+  transform: scale(1);
+}
+.lightbox span {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8rem;
+  height: 4.8rem;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s var(--ease);
+  user-select: none;
+}
+.lightbox span:hover {
+  background: var(--primary);
+  transform: scale(1.08);
+}
+.lightbox .lightbox-close {
+  top: 2.4rem;
+  right: 2.4rem;
+}
+.lightbox .lightbox-prev {
+  left: 2.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lightbox .lightbox-next {
+  right: 2.4rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.lightbox .lightbox-prev:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+.lightbox .lightbox-next:hover {
+  transform: translateY(-50%) scale(1.08);
+}
+body.lightbox-open {
+  overflow: hidden;
+}
+@media (max-width: 480px) {
+  .gallery-grid {
+    grid-template-columns: 1fr;
+  }
+  .lightbox .lightbox-prev {
+    left: 1rem;
+  }
+  .lightbox .lightbox-next {
+    right: 1rem;
+  }
+}
+
 /* ===== Experience timeline ===== */
 .experience {
   background: #fff;

@@ -235,6 +235,90 @@ srtop.reveal('.experience .morebtn', { delay: 300 });
 /* SCROLL FOOTER */
 srtop.reveal('.footer .box', { interval: 150 });
 
+/* ===== GALLERY ===== */
+const IMAGE_EXT = /\.(jpe?g|png|gif|webp|avif|svg)$/i;
+
+async function fetchGalleryImages() {
+    const images = new Set();
+    const dir = "assets/images/gallery/";
+
+    // reads the server's directory listing — just drop a file
+    // into assets/images/gallery/ and it shows up
+    try {
+        const res = await fetch(dir);
+        if (res.ok && (res.headers.get("content-type") || "").includes("text/html")) {
+            const html = await res.text();
+            const doc = new DOMParser().parseFromString(html, "text/html");
+            doc.querySelectorAll("a[href]").forEach(a => {
+                const href = a.getAttribute("href");
+                if (href && IMAGE_EXT.test(href) && !href.startsWith("?") && !href.startsWith("/")) {
+                    const name = decodeURIComponent(href.split("/").pop());
+                    images.add(dir + name);
+                }
+            });
+        }
+    } catch (e) { /* directory listing disabled */ }
+
+    return [...images];
+}
+
+let galleryImages = [];
+let lightboxIndex = 0;
+
+function showGallery(images) {
+    const container = document.getElementById("galleryContainer");
+    if (!container) return;
+    container.innerHTML = images.map((src, i) => `
+        <div class="g-item" data-index="${i}">
+            <img loading="lazy" src="${src}" alt="gallery image ${i + 1}" />
+        </div>`).join("");
+
+    container.querySelectorAll(".g-item").forEach(item => {
+        item.addEventListener("click", () => openLightbox(+item.dataset.index));
+    });
+
+    if (window.ScrollReveal) {
+        srtop.reveal('.gallery .g-item', { interval: 100 });
+    }
+}
+
+function openLightbox(index) {
+    lightboxIndex = index;
+    const lb = document.getElementById('lightbox');
+    document.getElementById('lightboxImg').src = galleryImages[lightboxIndex];
+    lb.classList.add('open');
+    lb.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+}
+function closeLightbox() {
+    const lb = document.getElementById('lightbox');
+    lb.classList.remove('open');
+    lb.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+}
+function stepLightbox(dir) {
+    lightboxIndex = (lightboxIndex + dir + galleryImages.length) % galleryImages.length;
+    document.getElementById('lightboxImg').src = galleryImages[lightboxIndex];
+}
+
+document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+document.getElementById('lightboxPrev').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(-1); });
+document.getElementById('lightboxNext').addEventListener('click', (e) => { e.stopPropagation(); stepLightbox(1); });
+document.getElementById('lightbox').addEventListener('click', (e) => {
+    if (e.target.id === 'lightbox') closeLightbox();
+});
+document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') stepLightbox(-1);
+    if (e.key === 'ArrowRight') stepLightbox(1);
+});
+
+fetchGalleryImages().then(images => {
+    galleryImages = images;
+    showGallery(images);
+});
+
 /* ===== Custom cursor (fine pointers only) ===== */
 (function () {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
