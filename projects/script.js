@@ -46,18 +46,16 @@ function showProjects(projects) {
     projects.forEach(project => {
         projectsHTML += `
         <div class="grid-item ${project.category}">
-        <div class="box tilt" style="width: 380px; margin: 1rem">
-      <img draggable="false" src="../assets/images/projects/${project.image}.jpg" alt="project" />
+        <div class="box tilt">
+      <div class="thumb">
+        <img draggable="false" loading="lazy" src="../assets/images/projects/${project.image}.jpg" alt="${project.name}" />
+      </div>
       <div class="content">
-        <div class="tag">
         <h3>${project.name}</h3>
-        </div>
-        <div class="desc">
-          <p>${project.desc}</p>
-          <div class="btns">
-            <a href="${project.links.view}" class="btn" target="_blank"><i class="fas fa-eye"></i> View</a>
-            <a href="${project.links.code}" class="btn" target="_blank">Source <i class="fas fa-code"></i></a>
-          </div>
+        <p>${project.desc}</p>
+        <div class="btns">
+          <a href="${project.links.view}" class="btn" target="_blank"><i class="fas fa-eye"></i> Live</a>
+          <a href="${project.links.code}" class="btn btn-alt" target="_blank"><i class="fas fa-code"></i> Code</a>
         </div>
       </div>
     </div>
@@ -104,24 +102,3 @@ getProjects().then(data => {
     showProjects(data);
 })
 // fetch projects end
-
-
-
-// diHasan developer mode
-document.onkeydown = function (e) {
-    if (e.keyCode == 123) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-        return false;
-    }
-}

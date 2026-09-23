@@ -1,25 +1,52 @@
 $(document).ready(function () {
 
-    $('#menu').click(function () {
-        $(this).toggleClass('fa-times');
-        $('.navbar').toggleClass('nav-toggle');
+    const $menu = $('#menu');
+    const $navbar = $('.navbar');
+    const $backdrop = $('#navBackdrop');
+    const header = document.querySelector('header');
+
+    function closeMenu() {
+        $menu.removeClass('fa-times');
+        $navbar.removeClass('nav-toggle');
+        $backdrop.removeClass('show');
+    }
+
+    function toggleMenu() {
+        $menu.toggleClass('fa-times');
+        $navbar.toggleClass('nav-toggle');
+        $backdrop.toggleClass('show', $navbar.hasClass('nav-toggle'));
+    }
+
+    $menu.click(toggleMenu);
+    $menu.on('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            toggleMenu();
+        }
     });
+    $backdrop.click(closeMenu);
+    $('.navbar a').on('click', closeMenu);
 
     $(window).on('scroll load', function () {
-        $('#menu').removeClass('fa-times');
-        $('.navbar').removeClass('nav-toggle');
+        const top = $(window).scrollTop();
 
-        if (window.scrollY > 60) {
+        if (top > 60) {
             document.querySelector('#scroll-top').classList.add('active');
+            header.classList.add('scrolled');
         } else {
             document.querySelector('#scroll-top').classList.remove('active');
+            header.classList.remove('scrolled');
         }
+
+        // scroll progress bar
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? (top / docHeight) * 100 : 0;
+        document.getElementById('scrollProgress').style.width = progress + '%';
 
         // scroll spy
         $('section').each(function () {
             let height = $(this).height();
             let offset = $(this).offset().top - 200;
-            let top = $(window).scrollTop();
             let id = $(this).attr('id');
 
             if (top > offset && top < offset + height) {
@@ -29,30 +56,16 @@ $(document).ready(function () {
         });
     });
 
-    // smooth scrolling
+    // smooth scrolling (offset for fixed header)
     $('a[href*="#"]').on('click', function (e) {
-        e.preventDefault();
-        $('html, body').animate({
-            scrollTop: $($(this).attr('href')).offset().top,
-        }, 500, 'linear')
+        const target = $(this).attr('href');
+        if (target.length > 1 && $(target).length) {
+            e.preventDefault();
+            $('html, body').animate({
+                scrollTop: $(target).offset().top - 70,
+            }, 500, 'swing');
+        }
     });
-
-    // <!-- emailjs to mail contact form data -->
-    $("#contact-form").submit(function (event) {
-        emailjs.init("user_TTDmetQLYgWCLzHTDgqxm");
-
-        emailjs.sendForm('contact_service', 'template_contact', '#contact-form')
-            .then(function (response) {
-                console.log('SUCCESS!', response.status, response.text);
-                document.getElementById("contact-form").reset();
-                alert("Form Submitted Successfully");
-            }, function (error) {
-                console.log('FAILED...', error);
-                alert("Form Submission Failed! Try Again");
-            });
-        event.preventDefault();
-    });
-    // <!-- emailjs to mail contact form data -->
 
 });
 
@@ -71,7 +84,7 @@ document.addEventListener('visibilitychange',
 
 // <!-- typed js effect starts -->
 var typed = new Typed(".typing-text", {
-    strings: ["Fullstack development", "Backend development", "WordPress Development", "Digital Marketing", "Brand Managing"],
+    strings: ["Fullstack development", "Backend development", "WordPress Development", "DevOps & Automation", "AI & API Integration", "Digital Marketing"],
     loop: true,
     typeSpeed: 50,
     backSpeed: 25,
@@ -96,7 +109,7 @@ function showSkills(skills) {
         skillHTML += `
         <div class="bar">
               <div class="info">
-                <img src=${skill.icon} alt="skill" />
+                <img loading="lazy" src=${skill.icon} alt="skill" />
                 <span>${skill.name}</span>
               </div>
             </div>`
@@ -110,17 +123,15 @@ function showProjects(projects) {
     projects.slice(0, 10).filter(project => project.category != "android").forEach(project => {
         projectHTML += `
         <div class="box tilt">
-      <img draggable="false" src="assets/images/projects/${project.image}.jpg" alt="project" />
+      <div class="thumb">
+        <img draggable="false" loading="lazy" src="assets/images/projects/${project.image}.jpg" alt="${project.name}" />
+      </div>
       <div class="content">
-        <div class="tag">
         <h3>${project.name}</h3>
-        </div>
-        <div class="desc">
-          <p>${project.desc}</p>
-          <div class="btns">
-            <a href="${project.links.view}" class="btn" target="_blank"><i class="fas fa-eye"></i> View</a>
-            <a href="${project.links.code}" class="btn" target="_blank">Source <i class="fas fa-code"></i></a>
-          </div>
+        <p>${project.desc}</p>
+        <div class="btns">
+          <a href="${project.links.view}" class="btn" target="_blank"><i class="fas fa-eye"></i> Live</a>
+          <a href="${project.links.code}" class="btn btn-alt" target="_blank"><i class="fas fa-code"></i> Code</a>
         </div>
       </div>
     </div>`
@@ -129,20 +140,24 @@ function showProjects(projects) {
 
     // <!-- tilt js effect starts -->
     VanillaTilt.init(document.querySelectorAll(".tilt"), {
-        max: 15,
+        max: 8,
+        speed: 400,
+        glare: true,
+        "max-glare": 0.15,
     });
     // <!-- tilt js effect ends -->
 
     /* ===== SCROLL REVEAL ANIMATION ===== */
     const srtop = ScrollReveal({
         origin: 'top',
-        distance: '80px',
-        duration: 1000,
-        reset: true
+        distance: '60px',
+        duration: 900,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        reset: false
     });
 
     /* SCROLL PROJECTS */
-    srtop.reveal('.work .box', { interval: 200 });
+    srtop.reveal('.work .box', { interval: 150 });
 
 }
 
@@ -156,7 +171,10 @@ fetchData("projects").then(data => {
 
 // <!-- tilt js effect starts -->
 VanillaTilt.init(document.querySelectorAll(".tilt"), {
-    max: 15,
+    max: 8,
+    speed: 400,
+    glare: true,
+    "max-glare": 0.15,
 });
 // <!-- tilt js effect ends -->
 
@@ -171,76 +189,88 @@ function fadeOut() {
 window.onload = fadeOut;
 // pre loader end
 
-// diHasan developer mode
-document.onkeydown = function (e) {
-    if (e.keyCode == 123) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
-        return false;
-    }
-    if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
-        return false;
-    }
-}
-
 
 /* ===== SCROLL REVEAL ANIMATION ===== */
 const srtop = ScrollReveal({
     origin: 'top',
-    distance: '80px',
-    duration: 1000,
-    reset: true
+    distance: '60px',
+    duration: 900,
+    easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    reset: false
 });
+
+/* SECTION HEADINGS */
+srtop.reveal('.heading', { distance: '40px', interval: 100 });
 
 /* SCROLL HOME */
-srtop.reveal('.home .content h3', { delay: 200 });
-srtop.reveal('.home .content p', { delay: 200 });
-srtop.reveal('.home .content .btn', { delay: 200 });
-
-srtop.reveal('.home .image', { delay: 400 });
-srtop.reveal('.home .linkedin', { interval: 600 });
-srtop.reveal('.home .github', { interval: 800 });
-srtop.reveal('.home .twitter', { interval: 1000 });
-srtop.reveal('.home .telegram', { interval: 600 });
-srtop.reveal('.home .instagram', { interval: 600 });
-srtop.reveal('.home .dev', { interval: 600 });
+srtop.reveal('.home .hero-badge', { delay: 150 });
+srtop.reveal('.home .content h2', { delay: 250 });
+srtop.reveal('.home .content p', { delay: 350 });
+srtop.reveal('.home .content .btn', { delay: 450 });
+srtop.reveal('.home .image', { delay: 500 });
+srtop.reveal('.home .socials li', { interval: 120, delay: 550 });
 
 /* SCROLL ABOUT */
+srtop.reveal('.about .row .image', { delay: 200 });
 srtop.reveal('.about .content h3', { delay: 200 });
-srtop.reveal('.about .content .tag', { delay: 200 });
-srtop.reveal('.about .content p', { delay: 200 });
-srtop.reveal('.about .content .box-container', { delay: 200 });
-srtop.reveal('.about .content .resumebtn', { delay: 200 });
+srtop.reveal('.about .content .tag', { delay: 300 });
+srtop.reveal('.about .content p', { delay: 350 });
+srtop.reveal('.about .content .box', { interval: 120 });
+srtop.reveal('.about .content .resumebtn', { delay: 300 });
 
+/* SCROLL REVIEWS */
+srtop.reveal('.reviews .video', { interval: 120 });
 
 /* SCROLL SKILLS */
-srtop.reveal('.skills .container', { interval: 200 });
-srtop.reveal('.skills .container .bar', { delay: 400 });
+srtop.reveal('.skills .container', { delay: 200 });
+srtop.reveal('.skills .container .bar', { interval: 60 });
 
 /* SCROLL EDUCATION */
-srtop.reveal('.education .box', { interval: 200 });
-
-/* SCROLL PROJECTS */
-srtop.reveal('.work .box', { interval: 200 });
+srtop.reveal('.education .box', { interval: 180 });
 
 /* SCROLL EXPERIENCE */
-srtop.reveal('.experience .timeline', { delay: 400 });
-srtop.reveal('.experience .timeline .container', { interval: 400 });
+srtop.reveal('.experience .timeline .container', { interval: 200 });
+srtop.reveal('.experience .morebtn', { delay: 300 });
 
-/* SCROLL CONTACT */
-srtop.reveal('.contact .container', { delay: 400 });
-srtop.reveal('.contact .container .form-group', { delay: 400 });
+/* SCROLL FOOTER */
+srtop.reveal('.footer .box', { interval: 150 });
 
-/* Gif Cursor */
-const cursor = document.getElementById('customCursor');
-document.addEventListener('mousemove', (e) => {
-    cursor.style.left = `${e.pageX}px`;
-    cursor.style.top = `${e.pageY}px`;
-});
+/* ===== Custom cursor (fine pointers only) ===== */
+(function () {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    if (!dot || !ring) return;
+
+    document.body.classList.add('cursor-active');
+
+    let mouseX = 0, mouseY = 0;
+    let ringX = 0, ringY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+        dot.style.left = mouseX + 'px';
+        dot.style.top = mouseY + 'px';
+    });
+
+    (function animateRing() {
+        ringX += (mouseX - ringX) * 0.18;
+        ringY += (mouseY - ringY) * 0.18;
+        ring.style.left = ringX + 'px';
+        ring.style.top = ringY + 'px';
+        requestAnimationFrame(animateRing);
+    })();
+
+    document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, .btn, input, textarea, #menu, .tilt')) {
+            ring.classList.add('grow');
+        }
+    });
+    document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, .btn, input, textarea, #menu, .tilt')) {
+            ring.classList.remove('grow');
+        }
+    });
+})();
